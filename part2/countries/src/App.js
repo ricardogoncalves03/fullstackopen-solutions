@@ -53,7 +53,7 @@ const App = () => {
             {
                 countriesToShow.map(country => (
                   <p key={country.name}>
-                    {country.name} <button>show</button>
+                    {country.name} <button onClick={() => setCountries([country])}>show</button>
                   </p>
                 ))
             }
