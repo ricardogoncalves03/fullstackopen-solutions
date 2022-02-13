@@ -2,7 +2,7 @@ const Persons = ({ namesToShow }) => {
   return (
     <div>
       {namesToShow.map((person) => (
-        <div>
+        <div key={person.id}>
           <p>{person.name}</p>
           <p>{person.number}</p>
         </div>

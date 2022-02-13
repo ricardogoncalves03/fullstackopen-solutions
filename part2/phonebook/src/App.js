@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
+import personService from './services/persons'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filterPerson, setNewFilterPerson] = useState('');
+
+  useEffect(() => {
+    personService
+      .getAll()
+      .then(initialPersons => 
+        setPersons(initialPersons))
+  }, []);
 
   const namesToShow = filterPerson
   ? persons.filter(person => person.name.toLowerCase().includes(filterPerson))
@@ -20,23 +23,30 @@ const App = () => {
 
   const addPerson = event => {
     event.preventDefault();
-    const personObject = {
-      name: newName,
-      number: newNumber
-    }
 
-  const existingNames = persons.map(person => person.name);
-  if (existingNames.includes(newName)) {
-    window.alert(`${newName} is already added to phonebook`);
-  } else {
-    setPersons(persons.concat(personObject));
-  }
-  setNewName(''); // resets the value of the controlled input element
-  setNewNumber('');
-  }
+    const existingNames = persons.map(person => person.name);
+
+    if (existingNames.includes(newName)) {
+      window.alert(`${newName} is already added to phonebook`);
+    } else {
+        const personObject = {
+          name: newName,
+          number: newNumber
+        };
+        personService
+          .create(personObject)
+          .then(newPerson => {
+            setPersons(persons.concat(newPerson))
+            setNewName(''); // resets the value of the controlled input element
+            setNewNumber('');
+          })}
+
+      console.log('xd', persons[-1]);
+    }
+    console.log('xd', persons[persons.length - 1]);
+
 
   const handleAddName = (event) => {
-    console.log(event.target.value);
     setNewName(event.target.value);
   }
 
@@ -51,7 +61,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
-      <Filter filterPerson={filterPerson} handleFilterPerson={handleFilterPerson} />
+      <Filter value={filterPerson} onChange={handleFilterPerson} />
       <h2>add a new</h2>
       <PersonForm
         addPerson={addPerson}

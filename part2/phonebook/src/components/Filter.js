@@ -1,8 +1,8 @@
-const Filter = ({ filterPerson, handleFilterPerson }) => {
+const Filter = ({ value, onChange }) => {
 
   return (
-    <p>Filter shown with <input value={filterPerson} 
-      onChange={handleFilterPerson} />
+    <p>Filter shown with <input value={value} 
+      onChange={onChange} />
     </p>
   );
 }
