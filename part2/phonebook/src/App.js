@@ -27,7 +27,17 @@ const App = () => {
     const existingNames = persons.map(person => person.name);
 
     if (existingNames.includes(newName)) {
-      window.alert(`${newName} is already added to phonebook`);
+      const id = persons.find(p => p.name === newName).id;
+      const changedPerson = { ...persons, number: newNumber };
+      window.confirm(
+        `${newName} is already added to phonebook, replace the old number with a new one?`
+      );
+      personService
+        .update(changedPerson.id, changedPerson)
+        .then(returnedPerson => {
+          console.log(`${changedPerson} successfully updated`)
+          setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+        })
     } else {
         const personObject = {
           name: newName,
@@ -57,7 +67,7 @@ const App = () => {
     setNewFilterPerson(event.target.value);
   }
 
-  const handleDeletePerson = id => {
+  const DeletePerson = id => {
     const person = persons.find(p => p.id === id);
     if (window.confirm(`Delete ${person.name}?`)) {
       personService
@@ -81,7 +91,7 @@ const App = () => {
         handleAddNumber={handleAddNumber}
       />
       <h2>Numbers</h2>
-      <Persons namesToShow={namesToShow} deletePerson={handleDeletePerson} />
+      <Persons namesToShow={namesToShow} deletePerson={DeletePerson} />
     </div>
   );
 }
