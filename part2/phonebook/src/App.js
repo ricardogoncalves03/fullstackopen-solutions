@@ -45,7 +45,6 @@ const App = () => {
     }
     console.log('xd', persons[persons.length - 1]);
 
-
   const handleAddName = (event) => {
     setNewName(event.target.value);
   }
@@ -56,6 +55,17 @@ const App = () => {
 
   const handleFilterPerson = event => {
     setNewFilterPerson(event.target.value);
+  }
+
+  const handleDeletePerson = id => {
+    const person = persons.find(p => p.id === id);
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService
+        .deleteObject(id)
+        .then(response => {
+          setPersons(persons.filter(p => p.id !== id))
+        })
+    }
   }
 
   return (
@@ -71,8 +81,8 @@ const App = () => {
         handleAddNumber={handleAddNumber}
       />
       <h2>Numbers</h2>
-        <Persons namesToShow={namesToShow}/>
-      </div>
+      <Persons namesToShow={namesToShow} deletePerson={handleDeletePerson} />
+    </div>
   );
 }
 
